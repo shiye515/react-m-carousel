@@ -1,0 +1,29 @@
+{
+  "name": "react-m-carousel",
+  "version": "0.0.0",
+  "description": "react-m-carousel",
+  "main": "dist/react-m-carousel.min.js",
+  "homepage": "https://github.com/shiye515/react-m-carousel",
+  "authors": [
+    "shiye515"
+  ],
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "react",
+    "react-component"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".editorconfig",
+    ".gitignore",
+    "package.json",
+    "src",
+    "node_modules",
+    "example",
+    "test"
+  ]
+}
