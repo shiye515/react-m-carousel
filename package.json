@@ -31,10 +31,10 @@
     "react": "global:React"
   },
   "scripts": {
-    "build": "gulp clean && NODE_ENV=production gulp build",
+    "build": "gulp clean && set NODE_ENV=production gulp build",
     "examples": "gulp dev:server",
     "lint": "eslint ./; true",
-    "publish:site": "NODE_ENV=production gulp publish:examples",
+    "publish:site": "set NODE_ENV=production gulp publish:examples",
     "release": "set NODE_ENV=production gulp release",
     "start": "gulp dev",
     "test": "echo \"no tests yet\" && exit 0",

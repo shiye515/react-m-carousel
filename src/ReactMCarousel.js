@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react'
+import ReactMCarouselSlide from './ReactMCarouselSlide.js'
 
 var ReactMCarousel = React.createClass({
     propTypes: {
@@ -12,23 +13,35 @@ var ReactMCarousel = React.createClass({
             React.PropTypes.element.isRequired,
             React.PropTypes.array.isRequired
         ]),
+        responsive: React.PropTypes.number,
         flickThreshold: React.PropTypes.number,
+        activeIndex: React.PropTypes.number,
         delta: React.PropTypes.number
     },
     getDefaultProps() {
         return {
             direction: 'horizontal',
             flickThreshold: 0.6,
-            delta: 10
+            delta: 10,
+            className: '',
+            responsive: 40,
+            activeIndex: 0
         }
     },
-    getInitialState() {
+    initialState() {
         return {
             x: null,
             y: null,
             swiping: false,
-            start: 0
+            start: 0,
+            delta: 0
         }
+    },
+    getInitialState() {
+        var state = this.initialState();
+        state.activeIndex = this.props.activeIndex;
+        state.slideWidth = 0;
+        return state
     },
     calculatePos(e) {
         var x = e.changedTouches[0].clientX;
@@ -48,7 +61,9 @@ var ReactMCarousel = React.createClass({
         }
     },
     move(delta) {
-        console.log(delta);
+        this.setState({
+            delta: delta
+        })
     },
     touchStart: function (e) {
         if (e.touches.length > 1) {
@@ -69,7 +84,7 @@ var ReactMCarousel = React.createClass({
 
         var cancelPageSwipe = false;
         var pos = this.calculatePos(e);
-        
+
         if (isHorizontal && pos.absX > pos.absY) {
             cancelPageSwipe = true;
             this.move(pos.deltaX);
@@ -96,30 +111,55 @@ var ReactMCarousel = React.createClass({
         var velocity = Math.sqrt(pos.absX * pos.absX + pos.absY * pos.absY) / time;
         var isFlick = velocity > this.props.flickThreshold;
 
-        this.props.onSwiped && this.props.onSwiped(
-            e,
-            pos.deltaX,
-            pos.deltaY,
-            isFlick
-        );
+        var state = this.initialState();
+        var len = this.props.children.length;
+        if (isFlick || pos.absX > 10) {
+            state.activeIndex = (this.state.activeIndex + pos.absX / pos.deltaX + len) % len
+        }
 
-        this.setState(this.getInitialState())
+        this.setState(state)
     },
     render() {
         var style = {
+            position: 'relative',
             backgroundColor: '#eee',
             width: '100%',
-            height: '200px'
+            overflow: 'hidden'
         };
-
+        var trackStyle = {
+            position: 'absolute',
+            height: '100%',
+            whiteSpace: 'nowrap',
+            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + 1) - this.state.delta) + 'px, 0px) translateZ(0px)'
+        }
+        if (this.props.responsive !== 0) {
+            style.height = 0;
+            style.paddingBottom = this.props.responsive + '%';
+        }
+        var len = this.props.children.length;
+        if (!len) {
+            return (
+                <div className={'m-carousel ' + this.props.className} style={style}>
+                    <ReactMCarouselSlide>{this.props.children}</ReactMCarouselSlide>
+                </div>
+            );
+        }
         return (
-            <div {...this.props} style={style} onTouchStart={this.touchStart} onTouchMove={this.touchMove} onTouchEnd={this.touchEnd}>
-                <h1>react-m-carousel</h1>
-                <div>x:{this.state.x}</div>
-                <div>y:{this.state.y}</div>
-                <div>swiping:{this.state.swiping}</div>
+            <div className={'m-carousel ' + this.props.className} style={style} onTouchStart={this.touchStart} onTouchMove={this.touchMove} onTouchEnd={this.touchEnd} ref="carousel">
+                <div style={trackStyle}>
+                    <ReactMCarouselSlide lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{this.props.children[len-1]}</ReactMCarouselSlide>
+                    {this.props.children.map((v, i)=>{
+                        return <ReactMCarouselSlide key={i} lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{v}</ReactMCarouselSlide>
+                    })}
+                    <ReactMCarouselSlide lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{this.props.children[0]}</ReactMCarouselSlide>
+                </div>
             </div>
         );
+    },
+    componentDidMount() {
+        this.setState({
+            slideWidth: this.refs.carousel.getBoundingClientRect().width
+        });
     }
 });
 
