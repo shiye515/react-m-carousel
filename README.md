@@ -35,16 +35,49 @@ __EXPLAIN USAGE HERE__
 ```
 var ReactMCarousel = require('react-m-carousel');
 
-<ReactMCarousel>Example</ReactMCarousel>
+<ReactMCarousel>
+    <div className="ex-s">1</div>
+    <div className="ex-s">2</div>
+    <div className="ex-s">3</div>
+    <div className="ex-s">4</div>
+</ReactMCarousel>
 ```
 
-### Properties
+### Props
 
-* __DOCUMENT PROPERTIES HERE__
+#### loop: React.PropTypes.bool
+是否循环轮播，暂不支持配置，默认循环
 
-### Notes
+#### lazy: React.PropTypes.bool
+是否懒加载
 
-__ADDITIONAL USAGE NOTES__
+#### direction: React.PropTypes.oneOf(['vertical', 'horizontal'])
+滑动方向，暂不支持配置
+
+#### indicators: React.PropTypes.bool
+是否添加屏点
+
+#### onSwiped: React.PropTypes.func
+轮播完成后回调
+
+#### onSwiping: React.PropTypes.func
+手指滑动时的回调
+
+#### children: React.PropTypes.oneOfType([React.PropTypes.element.isRequired, React.PropTypes.array.isRequired])
+子组件
+
+#### responsive: React.PropTypes.number
+是否开启响应式高度，若为0则不开启，其他正整数表示 高度是宽度的百分之多少
+
+#### flickThreshold: React.PropTypes.number
+轻弹的最小速度
+
+#### activeIndex: React.PropTypes.number
+默认显示的卡片
+
+#### delta: React.PropTypes.number
+滚动时触发滚动到下一张的最小值
+
 
 
 ## Development (`src`, `lib` and the build process)
@@ -53,9 +86,6 @@ __ADDITIONAL USAGE NOTES__
 
 To build, watch and serve the examples (which will also watch the component source), run `npm start`. If you just want to watch changes to `src` and rebuild `lib`, run `npm run watch` (this is useful if you are working with `npm link`).
 
-## License
-
-__PUT LICENSE HERE__
 
 Copyright (c) 2016 shiye515.
 

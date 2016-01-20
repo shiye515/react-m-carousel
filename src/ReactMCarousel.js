@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactMCarouselSlide from './ReactMCarouselSlide.js'
+import prefix from 'react-prefixer'
+function noop(){}
 
 var ReactMCarousel = React.createClass({
     propTypes: {
@@ -22,10 +24,12 @@ var ReactMCarousel = React.createClass({
         return {
             direction: 'horizontal',
             flickThreshold: 0.6,
-            delta: 10,
+            delta: 100,
             className: '',
             responsive: 40,
-            activeIndex: 0
+            activeIndex: 0,
+            onSwiped:noop,
+            onSwiping:noop
         }
     },
     initialState() {
@@ -34,7 +38,8 @@ var ReactMCarousel = React.createClass({
             y: null,
             swiping: false,
             start: 0,
-            delta: 0
+            delta: 0,
+            transitionDuration: 0
         }
     },
     getInitialState() {
@@ -63,7 +68,43 @@ var ReactMCarousel = React.createClass({
     move(delta) {
         this.setState({
             delta: delta
-        })
+        });
+        this.props.onSwiping(delta);
+    },
+    sliding(endSlideIndex) {
+        var self = this;
+        var len = this.props.children.length;
+        var realIndex = (endSlideIndex + len) % len;
+        var state = this.initialState();
+        state.activeIndex = endSlideIndex;
+        state.transitionDuration = 400;
+        state.frozen = true;
+
+        this.transitionEnd(this.refs.carouselTrack, function (e) {
+            this.setState({
+                activeIndex: realIndex,
+                transitionDuration: 0
+            });
+            this.props.onSwiped(realIndex);
+        });
+
+        this.setState(state);
+    },
+    transitionEnd(el, callback) {
+        var self = this;
+        var capture = false;
+
+        function endCallback(e) {
+            callback.call(self, e);
+            el.removeEventListener(e.type, endCallback, capture);
+            self.setState({
+                frozen: false
+            })
+        }
+        el.addEventListener('transitionend', endCallback, capture);
+        el.addEventListener('webkitTransitionEnd', endCallback, capture);
+        el.addEventListener('oTransitionEnd', endCallback, capture);
+        el.addEventListener('MSTransitionEnd', endCallback, capture);
     },
     touchStart: function (e) {
         if (e.touches.length > 1) {
@@ -77,7 +118,7 @@ var ReactMCarousel = React.createClass({
         })
     },
     touchMove: function (e) {
-        if (!this.state.x || !this.state.y || e.touches.length > 1) {
+        if (!this.state.x || !this.state.y || e.touches.length > 1 || this.state.frozen) {
             return
         }
         var isHorizontal = this.props.direction === 'horizontal';
@@ -111,48 +152,65 @@ var ReactMCarousel = React.createClass({
         var velocity = Math.sqrt(pos.absX * pos.absX + pos.absY * pos.absY) / time;
         var isFlick = velocity > this.props.flickThreshold;
 
-        var state = this.initialState();
+        var activeIndex = this.state.activeIndex;
         var len = this.props.children.length;
-        if (isFlick || pos.absX > 10) {
-            state.activeIndex = (this.state.activeIndex + pos.absX / pos.deltaX + len) % len
+        if (isFlick || pos.absX > this.props.delta) {
+            activeIndex = activeIndex + pos.absX / pos.deltaX;
         }
 
-        this.setState(state)
+        this.sliding(activeIndex)
+    },
+    getIndicators() {
+        return (
+            <div className="indicators">
+                {this.props.children.map((v, i) => {
+                    return <div onClick={this.sliding.bind(this, i)} className={'dot ' + (this.state.activeIndex == i ? 'active' : '')} key={i}>{i}</div>
+                })}
+            </div>
+        )
+    },
+    shouldActive(i) {
+        return this.state.activeIndex - 1 <= i && i <= this.state.activeIndex + 1
     },
     render() {
         var style = {
             position: 'relative',
-            backgroundColor: '#eee',
             width: '100%',
             overflow: 'hidden'
         };
-        var trackStyle = {
-            position: 'absolute',
-            height: '100%',
-            whiteSpace: 'nowrap',
-            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + 1) - this.state.delta) + 'px, 0px) translateZ(0px)'
-        }
         if (this.props.responsive !== 0) {
             style.height = 0;
             style.paddingBottom = this.props.responsive + '%';
         }
+
+        var trackStyle = {
+            position: 'absolute',
+            height: '100%',
+            whiteSpace: 'nowrap',
+            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + 1) - this.state.delta) + 'px, 0px) translateZ(0px)',
+            transitionDuration: this.state.transitionDuration + 'ms'
+        }
         var len = this.props.children.length;
         if (!len) {
+            trackStyle.transform = 'translate(0,0,0)';
             return (
-                <div className={'m-carousel ' + this.props.className} style={style}>
-                    <ReactMCarouselSlide>{this.props.children}</ReactMCarouselSlide>
+                <div className={'m-carousel ' + this.props.className} style={style} ref="carousel">
+                    <div style={prefix(trackStyle)} ref="carouselTrack">
+                        <ReactMCarouselSlide width={this.state.slideWidth}>{this.props.children}</ReactMCarouselSlide>
+                    </div>
                 </div>
             );
         }
         return (
             <div className={'m-carousel ' + this.props.className} style={style} onTouchStart={this.touchStart} onTouchMove={this.touchMove} onTouchEnd={this.touchEnd} ref="carousel">
-                <div style={trackStyle}>
-                    <ReactMCarouselSlide lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{this.props.children[len-1]}</ReactMCarouselSlide>
+                <div style={prefix(trackStyle)} ref="carouselTrack">
+                    <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(-1)} width={this.state.slideWidth}>{this.props.children[len-1]}</ReactMCarouselSlide>
                     {this.props.children.map((v, i)=>{
-                        return <ReactMCarouselSlide key={i} lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{v}</ReactMCarouselSlide>
+                        return <ReactMCarouselSlide key={i} lazy={this.props.lazy} actived={this.shouldActive(i)} width={this.state.slideWidth}>{v}</ReactMCarouselSlide>
                     })}
-                    <ReactMCarouselSlide lazy={this.props.lazy} actived={true} width={this.state.slideWidth}>{this.props.children[0]}</ReactMCarouselSlide>
+                    <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(len)} width={this.state.slideWidth}>{this.props.children[0]}</ReactMCarouselSlide>
                 </div>
+                {this.getIndicators()}
             </div>
         );
     },
@@ -160,6 +218,11 @@ var ReactMCarousel = React.createClass({
         this.setState({
             slideWidth: this.refs.carousel.getBoundingClientRect().width
         });
+    },
+    componentWillReceiveProps(nextProps) {
+        if (this.props.activeIndex !== nextProps.activeIndex) {
+            this.sliding(nextProps.activeIndex)
+        }
     }
 });
 

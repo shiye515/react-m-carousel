@@ -26,7 +26,7 @@ var ReactMCarouselSlide = React.createClass({
         if (this.props.width) {
             style.width = this.props.width;
         }
-        return (<div className="m-carousel-slide" style={style}>{(this.props.lazy && !this.state.actived) ? null : this.props.children}</div>);
+        return (<div className="m-carousel-slide" style={style}>{(this.props.lazy && !this.state.actived) ? '加载中...' : this.props.children}</div>);
     },
     componentWillReceiveProps(nextProps) {
         if (nextProps.actived) {
