@@ -21,12 +21,14 @@ var ReactMCarouselSlide = React.createClass({
     render() {
         var style = {
             display: 'inline-block',
-            height: '100%'
+            height: '100%',
+            width: this.props.width
         }
         if (this.props.width) {
-            style.width = this.props.width;
+            return (<div className="m-carousel-slide" style={style}>{(this.props.lazy && !this.state.actived) ? '加载中...' : this.props.children}</div>);
+        }else{
+            return null
         }
-        return (<div className="m-carousel-slide" style={style}>{(this.props.lazy && !this.state.actived) ? '加载中...' : this.props.children}</div>);
     },
     componentWillReceiveProps(nextProps) {
         if (nextProps.actived) {

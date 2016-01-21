@@ -67,8 +67,16 @@ label {
     height: 100%;
     box-sizing: border-box;
 }
-.m-carousel{
-	background-color: #eee;
+
+.m-carousel {
+    background-color: #eee;
+    .m-carousel {
+        background-color: #aaa;
+    }
+}
+
+.outer{
+    height: 500px;
 }
 .indicators {
     position: absolute;
@@ -85,8 +93,8 @@ label {
         text-indent: -1000px;
         background-color: #999;
         border-radius: 1000px;
-        &.active{
-        	background-color: red;
+        &.active {
+            background-color: red;
         }
     }
 }

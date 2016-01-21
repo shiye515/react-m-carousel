@@ -15,9 +15,9 @@ var taskConfig = {
 	component: {
 		name: 'ReactMCarousel',
 		dependencies: [
-			'classnames',
 			'react',
-			'react-dom'
+			'react-dom',
+			'react-prefixer'
 		],
 		lib: 'lib'
 	},

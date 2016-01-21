@@ -1,6 +1,6 @@
 # react-m-carousel
 
-__COMPONENT DESCRIPTION GOES HERE__
+移动端专用的 react carousel component
 
 
 ## Demo & Examples
@@ -10,7 +10,8 @@ Live demo: [shiye515.github.io/react-m-carousel](http://shiye515.github.io/react
 To build the examples locally, run:
 
 ```
-npm install
+git clone https://github.com/shiye515/react-m-carousel.git
+cd react-m-carousel
 npm start
 ```
 
@@ -29,8 +30,6 @@ npm install react-m-carousel --save
 
 
 ## Usage
-
-__EXPLAIN USAGE HERE__
 
 ```
 var ReactMCarousel = require('react-m-carousel');

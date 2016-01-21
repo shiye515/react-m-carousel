@@ -1,150 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ReactMCarousel = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var el = document.createElement("div"),
-    camelRe = /-([a-z]|[0-9])/ig,
-    support,
-    camel;
-
-exports["default"] = function (prop, value) {
-    // If no value is supplied, use "inherit"
-    value = arguments.length === 2 ? value : "inherit";
-
-    // Try the native standard method first
-    if ("CSS" in window && "supports" in window.CSS) {
-        return window.CSS.supports(prop, value);
-    }
-
-    // Check Opera's native method
-    if ("supportsCSS" in window) {
-        return window.supportsCSS(prop, value);
-    }
-
-    // Convert to camel-case for DOM interactions
-    camel = prop.replace(camelRe, function (all, letter) {
-        return (letter + "").toUpperCase();
-    });
-
-    // Check if the property is supported
-    support = camel in el.style;
-
-    // Assign the property and value to invoke
-    // the CSS interpreter
-    el.style.cssText = prop + ":" + value;
-
-    // Ensure both the property and value are
-    // supported and return
-    return support && el.style[camel] !== "";
-};
-
-module.exports = exports["default"];
-},{}],2:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = ["columnCount", "columnGap", "columnRule", "columnRuleColor", "columnRuleWidth", "columns", "flex", "flexBasis", "flexGrow", "flexShrink", "order", "perspective", "perspectiveOrigin", "perspectiveOriginX", "perspectiveOriginY", "scrollSnapCoordinate", "scrollSnapDirection", "textDecoration", "textDecorationColor", "transform", "transformOrigin", "transformOriginX", "transformOriginY", "transformOriginZ", "transformStyle"];
-module.exports = exports["default"];
-},{}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _prefix = require("./prefix");
-
-var _prefix2 = _interopRequireDefault(_prefix);
-
-var _properties = require("./properties");
-
-var _properties2 = _interopRequireDefault(_properties);
-
-var _animatableValues = require("./animatableValues");
-
-var _animatableValues2 = _interopRequireDefault(_animatableValues);
-
-var _CssSupportsPolyfill = require("./CssSupportsPolyfill");
-
-var _CssSupportsPolyfill2 = _interopRequireDefault(_CssSupportsPolyfill);
-
-function camelToKebab(str) {
-    return str.replace(/\W+/g, "-").replace(/([a-z\d])([A-Z])/g, "$1-$2").toLowerCase();
-}
-
-function applyPrefixes(obj) {
-    if (typeof obj === "object" && !!obj) {
-        Object.keys(obj).forEach(function (key) {
-            var realKey = key;
-
-            if (typeof obj[key] === "object" && !!obj[key]) {
-                obj[key] = applyPrefixes(obj[key]);
-            } else if (_properties2["default"].indexOf(key) !== -1 && !(0, _CssSupportsPolyfill2["default"])(camelToKebab(key))) {
-                var value = obj[key];
-
-                realKey = _prefix2["default"].js + key.charAt(0).toUpperCase() + key.slice(1);
-
-                delete obj[key];
-                obj[realKey] = value;
-            }
-
-            if (realKey === "display" && obj[realKey] === "flex" && !(0, _CssSupportsPolyfill2["default"])("display", "flex")) {
-                obj[realKey] = _prefix2["default"] === "ms" ? "-ms-flexbox" : _prefix2["default"].css + "flex";
-            }
-
-            if (key === "transition") {
-                _animatableValues2["default"].forEach(function (animatableValue) {
-                    var kebabValue = camelToKebab(animatableValue);
-
-                    if (!(0, _CssSupportsPolyfill2["default"])(kebabValue)) {
-                        var re = new RegExp(kebabValue, "g");
-
-                        obj[realKey] = obj[realKey].replace(re, _prefix2["default"].css + kebabValue);
-                    }
-                });
-            }
-        });
-    }
-
-    return obj;
-}
-
-exports["default"] = applyPrefixes;
-module.exports = exports["default"];
-},{"./CssSupportsPolyfill":1,"./animatableValues":2,"./prefix":4,"./properties":5}],4:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var styles = window.getComputedStyle(document.documentElement, ""),
-    prefix = Array.prototype.slice.call(styles).join("").match(/-(moz|webkit|ms)-/)[1] || styles.OLink === "" && ["", "o"],
-    ret = {
-    css: "-" + prefix + "-",
-    js: prefix
-};
-
-if (ret.js !== "ms") {
-    ret.js = ret.js.charAt(0).toUpperCase() + ret.js.slice(1);
-}
-
-exports["default"] = ret;
-module.exports = exports["default"];
-},{}],5:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = ["alignContent", "alignItems", "alignSelf", "animation", "animationDelay", "animationDirection", "animationDuration", "animationFillMode", "animationIterationCount", "animationName", "animationPlayState", "animationTimingFunction", "appearance", "aspectRatio", "backfaceVisibility", "backgroundClip", "borderImage", "borderImageSlice", "boxShadow", "columnCount", "columnFill", "columnGap", "columnRule", "columnRuleColor", "columnRuleStyle", "columnRuleWidth", "columnSpan", "columnWidth", "columns", "flex", "flexBasis", "flexDirection", "flexFlow", "flexGrow", "flexShrink", "flexWrap", "fontFeatureSettings", "fontKearning", "fontVariantLigatures", "justifyContent", "grid", "gridArea", "gridAutoColumns", "gridAutoFlow", "gridAutoRows", "gridColumn", "gridColumnEnd", "gridColumnStart", "gridRow", "gridRowEnd", "gridRowStart", "gridTemplate", "gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows", "hyphens", "lineBreak", "perspective", "perspectiveOrigin", "perspectiveOriginX", "perspectiveOriginY", "rubyPosition", "scrollSnapCoordinate", "scrollSnapDestination", "scrollSnapPoints", "scrollSnapPointsX", "scrollSnapPointsY", "scrollSnapType", "tabSize", "textDecoration", "textDecorationColor", "textDecorationLine", "textDecorationStyle", "textOrientation", "textSizeAdjust", "transform", "transition", "transformOrigin", "transformOriginX", "transformOriginY", "transformOriginZ", "transformStyle", "transitionProperty", "transitionDuration", "transitionTimingFunction", "transitionDelay", "userModify", "userSelect"];
-module.exports = exports["default"];
-},{}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -235,13 +89,19 @@ var ReactMCarousel = _react2['default'].createClass({
         });
         this.props.onSwiping(delta);
     },
-    sliding: function sliding(endSlideIndex) {
+    sliding: function sliding(endSlideIndex, distanceMoved) {
+        distanceMoved = typeof distanceMoved === 'number' ? distanceMoved : 0;
         var self = this;
         var len = this.props.children.length;
+        if (!this.props.loop && (endSlideIndex < 0 || endSlideIndex >= len)) {
+            endSlideIndex = this.state.activeIndex;
+        }
+        var distanceLeft = endSlideIndex === this.state.activeIndex ? distanceMoved : this.state.slideWidth - distanceMoved;
+        var transitionDuration = distanceLeft / 2;
         var realIndex = (endSlideIndex + len) % len;
         var state = this.initialState();
         state.activeIndex = endSlideIndex;
-        state.transitionDuration = 400;
+        state.transitionDuration = transitionDuration;
         state.frozen = true;
 
         this.transitionEnd(this.refs.carouselTrack, function (e) {
@@ -250,15 +110,26 @@ var ReactMCarousel = _react2['default'].createClass({
                 transitionDuration: 0
             });
             this.props.onSwiped(realIndex);
-        });
+        }, transitionDuration);
 
         this.setState(state);
     },
-    transitionEnd: function transitionEnd(el, callback) {
+    transitionEnd: function transitionEnd(el, callback, timeout) {
         var self = this;
         var capture = false;
+        var timer = setTimeout(function () {
+            callback.call(self);
+            self.setState({
+                frozen: false
+            });
+            el.removeEventListener('transitionend', endCallback, capture);
+            el.removeEventListener('webkitTransitionEnd', endCallback, capture);
+            el.removeEventListener('oTransitionEnd', endCallback, capture);
+            el.removeEventListener('MSTransitionEnd', endCallback, capture);
+        }, timeout);
 
         function endCallback(e) {
+            clearTimeout(timer);
             callback.call(self, e);
             el.removeEventListener(e.type, endCallback, capture);
             self.setState({
@@ -282,7 +153,12 @@ var ReactMCarousel = _react2['default'].createClass({
         });
     },
     touchMove: function touchMove(e) {
-        if (!this.state.x || !this.state.y || e.touches.length > 1 || this.state.frozen) {
+        if (!this.state.x || !this.state.y || e.touches.length > 1) {
+            return;
+        }
+        if (this.state.frozen) {
+            e.preventDefault();
+            e.stopPropagation();
             return;
         }
         var isHorizontal = this.props.direction === 'horizontal';
@@ -304,6 +180,7 @@ var ReactMCarousel = _react2['default'].createClass({
 
         if (cancelPageSwipe) {
             e.preventDefault();
+            e.stopPropagation();
         }
     },
     touchEnd: function touchEnd(e) {
@@ -322,11 +199,17 @@ var ReactMCarousel = _react2['default'].createClass({
             activeIndex = activeIndex + pos.absX / pos.deltaX;
         }
 
-        this.sliding(activeIndex);
+        this.sliding(activeIndex, pos.absX);
+    },
+    touchCancel: function touchCancel(e) {
+        console.log(e);
     },
     getIndicators: function getIndicators() {
         var _this = this;
 
+        if (!this.props.indicators) {
+            return null;
+        }
         return _react2['default'].createElement(
             'div',
             { className: 'indicators' },
@@ -345,6 +228,7 @@ var ReactMCarousel = _react2['default'].createClass({
     render: function render() {
         var _this2 = this;
 
+        var loop = !!this.props.loop;
         var style = {
             position: 'relative',
             width: '100%',
@@ -359,7 +243,7 @@ var ReactMCarousel = _react2['default'].createClass({
             position: 'absolute',
             height: '100%',
             whiteSpace: 'nowrap',
-            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + 1) - this.state.delta) + 'px, 0px) translateZ(0px)',
+            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + (loop ? 1 : 0)) - this.state.delta) + 'px, 0px) translateZ(0px)',
             transitionDuration: this.state.transitionDuration + 'ms'
         };
         var len = this.props.children.length;
@@ -381,15 +265,15 @@ var ReactMCarousel = _react2['default'].createClass({
         }
         return _react2['default'].createElement(
             'div',
-            { className: 'm-carousel ' + this.props.className, style: style, onTouchStart: this.touchStart, onTouchMove: this.touchMove, onTouchEnd: this.touchEnd, ref: 'carousel' },
+            { className: 'm-carousel ' + this.props.className, style: style, onTouchStart: this.touchStart, onTouchMove: this.touchMove, onTouchEnd: this.touchEnd, onTouchCancel: this.touchCancel, ref: 'carousel' },
             _react2['default'].createElement(
                 'div',
                 { style: (0, _reactPrefixer2['default'])(trackStyle), ref: 'carouselTrack' },
-                _react2['default'].createElement(
+                loop ? _react2['default'].createElement(
                     _ReactMCarouselSlideJs2['default'],
                     { lazy: this.props.lazy, actived: this.shouldActive(-1), width: this.state.slideWidth },
                     this.props.children[len - 1]
-                ),
+                ) : null,
                 this.props.children.map(function (v, i) {
                     return _react2['default'].createElement(
                         _ReactMCarouselSlideJs2['default'],
@@ -397,11 +281,11 @@ var ReactMCarousel = _react2['default'].createClass({
                         v
                     );
                 }),
-                _react2['default'].createElement(
+                loop ? _react2['default'].createElement(
                     _ReactMCarouselSlideJs2['default'],
                     { lazy: this.props.lazy, actived: this.shouldActive(len), width: this.state.slideWidth },
                     this.props.children[0]
-                )
+                ) : null
             ),
             this.getIndicators()
         );
@@ -422,7 +306,7 @@ exports['default'] = ReactMCarousel;
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ReactMCarouselSlide.js":7,"react-prefixer":3}],7:[function(require,module,exports){
+},{"./ReactMCarouselSlide.js":2,"react-prefixer":undefined}],2:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -459,16 +343,18 @@ var ReactMCarouselSlide = _react2['default'].createClass({
     render: function render() {
         var style = {
             display: 'inline-block',
-            height: '100%'
+            height: '100%',
+            width: this.props.width
         };
         if (this.props.width) {
-            style.width = this.props.width;
+            return _react2['default'].createElement(
+                'div',
+                { className: 'm-carousel-slide', style: style },
+                this.props.lazy && !this.state.actived ? '加载中...' : this.props.children
+            );
+        } else {
+            return null;
         }
-        return _react2['default'].createElement(
-            'div',
-            { className: 'm-carousel-slide', style: style },
-            this.props.lazy && !this.state.actived ? '加载中...' : this.props.children
-        );
     },
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
         if (nextProps.actived) {
@@ -483,5 +369,5 @@ exports['default'] = ReactMCarouselSlide;
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[6])(6)
+},{}]},{},[1])(1)
 });

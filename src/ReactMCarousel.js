@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactMCarouselSlide from './ReactMCarouselSlide.js'
 import prefix from 'react-prefixer'
-function noop(){}
+
+function noop() {}
 
 var ReactMCarousel = React.createClass({
     propTypes: {
@@ -28,8 +29,8 @@ var ReactMCarousel = React.createClass({
             className: '',
             responsive: 40,
             activeIndex: 0,
-            onSwiped:noop,
-            onSwiping:noop
+            onSwiped: noop,
+            onSwiping: noop
         }
     },
     initialState() {
@@ -71,13 +72,19 @@ var ReactMCarousel = React.createClass({
         });
         this.props.onSwiping(delta);
     },
-    sliding(endSlideIndex) {
+    sliding(endSlideIndex, distanceMoved) {
+        distanceMoved = typeof distanceMoved === 'number' ? distanceMoved : 0;
         var self = this;
         var len = this.props.children.length;
+        if (!this.props.loop && (endSlideIndex < 0 || endSlideIndex >= len)) {
+            endSlideIndex = this.state.activeIndex;
+        }
+        var distanceLeft = (endSlideIndex === this.state.activeIndex) ? distanceMoved : (this.state.slideWidth - distanceMoved);
+        var transitionDuration = distanceLeft/2;
         var realIndex = (endSlideIndex + len) % len;
         var state = this.initialState();
         state.activeIndex = endSlideIndex;
-        state.transitionDuration = 400;
+        state.transitionDuration = transitionDuration;
         state.frozen = true;
 
         this.transitionEnd(this.refs.carouselTrack, function (e) {
@@ -86,15 +93,26 @@ var ReactMCarousel = React.createClass({
                 transitionDuration: 0
             });
             this.props.onSwiped(realIndex);
-        });
+        }, transitionDuration);
 
         this.setState(state);
     },
-    transitionEnd(el, callback) {
+    transitionEnd(el, callback, timeout) {
         var self = this;
         var capture = false;
+        var timer = setTimeout(function(){
+            callback.call(self);
+            self.setState({
+                frozen: false
+            });
+            el.removeEventListener('transitionend', endCallback, capture);
+            el.removeEventListener('webkitTransitionEnd', endCallback, capture);
+            el.removeEventListener('oTransitionEnd', endCallback, capture);
+            el.removeEventListener('MSTransitionEnd', endCallback, capture);
+        }, timeout);
 
         function endCallback(e) {
+            clearTimeout(timer);
             callback.call(self, e);
             el.removeEventListener(e.type, endCallback, capture);
             self.setState({
@@ -118,8 +136,13 @@ var ReactMCarousel = React.createClass({
         })
     },
     touchMove: function (e) {
-        if (!this.state.x || !this.state.y || e.touches.length > 1 || this.state.frozen) {
-            return
+        if (!this.state.x || !this.state.y || e.touches.length > 1) {
+            return;
+        }
+        if (this.state.frozen) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
         }
         var isHorizontal = this.props.direction === 'horizontal';
 
@@ -139,7 +162,8 @@ var ReactMCarousel = React.createClass({
         })
 
         if (cancelPageSwipe) {
-            e.preventDefault()
+            e.preventDefault();
+            e.stopPropagation();
         }
     },
     touchEnd: function (e) {
@@ -158,9 +182,15 @@ var ReactMCarousel = React.createClass({
             activeIndex = activeIndex + pos.absX / pos.deltaX;
         }
 
-        this.sliding(activeIndex)
+        this.sliding(activeIndex, pos.absX)
+    },
+    touchCancel(e){
+        console.log(e)
     },
     getIndicators() {
+        if (!this.props.indicators) {
+            return null;
+        }
         return (
             <div className="indicators">
                 {this.props.children.map((v, i) => {
@@ -173,6 +203,7 @@ var ReactMCarousel = React.createClass({
         return this.state.activeIndex - 1 <= i && i <= this.state.activeIndex + 1
     },
     render() {
+        var loop = !!this.props.loop;
         var style = {
             position: 'relative',
             width: '100%',
@@ -187,7 +218,7 @@ var ReactMCarousel = React.createClass({
             position: 'absolute',
             height: '100%',
             whiteSpace: 'nowrap',
-            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + 1) - this.state.delta) + 'px, 0px) translateZ(0px)',
+            transform: 'translate(' + (-this.state.slideWidth * (this.state.activeIndex + (loop ? 1 : 0)) - this.state.delta) + 'px, 0px) translateZ(0px)',
             transitionDuration: this.state.transitionDuration + 'ms'
         }
         var len = this.props.children.length;
@@ -202,13 +233,13 @@ var ReactMCarousel = React.createClass({
             );
         }
         return (
-            <div className={'m-carousel ' + this.props.className} style={style} onTouchStart={this.touchStart} onTouchMove={this.touchMove} onTouchEnd={this.touchEnd} ref="carousel">
+            <div className={'m-carousel ' + this.props.className} style={style} onTouchStart={this.touchStart} onTouchMove={this.touchMove} onTouchEnd={this.touchEnd} onTouchCancel={this.touchCancel} ref="carousel">
                 <div style={prefix(trackStyle)} ref="carouselTrack">
-                    <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(-1)} width={this.state.slideWidth}>{this.props.children[len-1]}</ReactMCarouselSlide>
+                    {loop ? <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(-1)} width={this.state.slideWidth}>{this.props.children[len-1]}</ReactMCarouselSlide> : null}
                     {this.props.children.map((v, i)=>{
                         return <ReactMCarouselSlide key={i} lazy={this.props.lazy} actived={this.shouldActive(i)} width={this.state.slideWidth}>{v}</ReactMCarouselSlide>
                     })}
-                    <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(len)} width={this.state.slideWidth}>{this.props.children[0]}</ReactMCarouselSlide>
+                    {loop ? <ReactMCarouselSlide lazy={this.props.lazy} actived={this.shouldActive(len)} width={this.state.slideWidth}>{this.props.children[0]}</ReactMCarouselSlide> : null}
                 </div>
                 {this.getIndicators()}
             </div>

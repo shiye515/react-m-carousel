@@ -22,12 +22,35 @@ var App = React.createClass({
 	render() {
 		return (
 			<div>
-                <button onClick={this.handleClick}>定位到第二个</button>
-                <ReactMCarousel lazy={true} activeIndex={this.state.index} onSwiping={this.onSwiping} onSwiped={this.onSwiped}>
-                    <div className="ex-s">1</div>
-                    <div className="ex-s">2</div>
-                    <div className="ex-s">3</div>
-                    <div className="ex-s">4</div>
+                <ReactMCarousel loop={true}>
+                    <div className="ex-s">11</div>
+                    <div className="ex-s">12</div>
+                    <div className="ex-s">13</div>
+                    <div className="ex-s">14</div>
+                </ReactMCarousel>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <ReactMCarousel className="outer" lazy={true} indicators={true} activeIndex={this.state.index} responsive={0}>
+                    <ReactMCarousel lazy={true} activeIndex={0} indicators={true}>
+                        <div className="ex-s">11</div>
+                        <div className="ex-s">12</div>
+                        <div className="ex-s">13</div>
+                        <div className="ex-s">14</div>
+                    </ReactMCarousel>
+                    <ReactMCarousel lazy={true} activeIndex={0}>
+                        <div className="ex-s">21</div>
+                        <div className="ex-s">22</div>
+                        <div className="ex-s">23</div>
+                        <div className="ex-s">24</div>
+                    </ReactMCarousel>
+                    <ReactMCarousel lazy={true} activeIndex={0}>
+                        <div className="ex-s">31</div>
+                        <div className="ex-s">32</div>
+                        <div className="ex-s">33</div>
+                        <div className="ex-s">34</div>
+                    </ReactMCarousel>
                 </ReactMCarousel>
 			</div>
 		);
