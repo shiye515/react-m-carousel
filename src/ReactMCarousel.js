@@ -80,7 +80,7 @@ var ReactMCarousel = React.createClass({
             endSlideIndex = this.state.activeIndex;
         }
         var distanceLeft = (endSlideIndex === this.state.activeIndex) ? distanceMoved : (this.state.slideWidth - distanceMoved);
-        var transitionDuration = distanceLeft/2;
+        var transitionDuration = distanceLeft / 2;
         var realIndex = (endSlideIndex + len) % len;
         var state = this.initialState();
         state.activeIndex = endSlideIndex;
@@ -100,7 +100,7 @@ var ReactMCarousel = React.createClass({
     transitionEnd(el, callback, timeout) {
         var self = this;
         var capture = false;
-        var timer = setTimeout(function(){
+        var timer = setTimeout(function () {
             callback.call(self);
             self.setState({
                 frozen: false
@@ -178,13 +178,21 @@ var ReactMCarousel = React.createClass({
 
         var activeIndex = this.state.activeIndex;
         var len = this.props.children.length;
-        if (isFlick || pos.absX > this.props.delta) {
-            activeIndex = activeIndex + pos.absX / pos.deltaX;
+        var isHorizontal = this.props.direction === 'horizontal';
+
+        if (isHorizontal && pos.absX > pos.absY) {
+            if (isFlick || pos.absX > this.props.delta) {
+                activeIndex = activeIndex + pos.absX / pos.deltaX;
+            }
+        } else if (!isHorizontal && pos.absX < pos.absY) {
+            if (isFlick || pos.absY > this.props.delta) {
+                activeIndex = activeIndex + pos.absY / pos.deltaY;
+            }
         }
 
         this.sliding(activeIndex, pos.absX)
     },
-    touchCancel(e){
+    touchCancel(e) {
         console.log(e)
     },
     getIndicators() {
@@ -222,7 +230,7 @@ var ReactMCarousel = React.createClass({
             transitionDuration: this.state.transitionDuration + 'ms'
         }
         var len = this.props.children.length;
-        if (!len) {
+        if (!len || len <= 1) {
             trackStyle.transform = 'translate(0,0,0)';
             return (
                 <div className={'m-carousel ' + this.props.className} style={style} ref="carousel">
