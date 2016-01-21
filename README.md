@@ -45,16 +45,16 @@ var ReactMCarousel = require('react-m-carousel');
 ### Props
 
 #### loop: React.PropTypes.bool
-是否循环轮播，暂不支持配置，默认循环
+是否循环轮播，默认否
 
 #### lazy: React.PropTypes.bool
-是否懒加载
+是否懒加载，默认否
 
 #### direction: React.PropTypes.oneOf(['vertical', 'horizontal'])
 滑动方向，暂不支持配置
 
 #### indicators: React.PropTypes.bool
-是否添加屏点
+是否添加屏点，默认否，不带任何样式，样式可参考demo写
 
 #### onSwiped: React.PropTypes.func
 轮播完成后回调
@@ -66,13 +66,13 @@ var ReactMCarousel = require('react-m-carousel');
 子组件
 
 #### responsive: React.PropTypes.number
-是否开启响应式高度，若为0则不开启，其他正整数表示 高度是宽度的百分之多少
+是否开启响应式高度，若为0则不开启，其他正整数表示 高度是宽度的百分之多少，默认 40
 
 #### flickThreshold: React.PropTypes.number
 轻弹的最小速度
 
 #### activeIndex: React.PropTypes.number
-默认显示的卡片
+默认显示的卡片，默认0
 
 #### delta: React.PropTypes.number
 滚动时触发滚动到下一张的最小值
