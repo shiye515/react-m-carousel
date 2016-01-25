@@ -22,7 +22,7 @@ var App = React.createClass({
 	render() {
 		return (
 			<div>
-                <ReactMCarousel loop={true}>
+                <ReactMCarousel loop={true} indicators={true} auto={true}>
                     <div className="ex-s">11</div>
                     <div className="ex-s">12</div>
                     <div className="ex-s">13</div>

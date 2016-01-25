@@ -8,6 +8,8 @@ var ReactMCarousel = React.createClass({
     propTypes: {
         loop: React.PropTypes.bool,
         lazy: React.PropTypes.bool,
+        auto: React.PropTypes.bool,
+        interval: React.PropTypes.number,
         direction: React.PropTypes.oneOf(['vertical', 'horizontal']),
         indicators: React.PropTypes.bool,
         onSwiped: React.PropTypes.func,
@@ -30,7 +32,8 @@ var ReactMCarousel = React.createClass({
             responsive: 40,
             activeIndex: 0,
             onSwiped: noop,
-            onSwiping: noop
+            onSwiping: noop,
+            interval: 3000
         }
     },
     initialState() {
@@ -257,6 +260,12 @@ var ReactMCarousel = React.createClass({
         this.setState({
             slideWidth: this.refs.carousel.getBoundingClientRect().width
         });
+        var self = this;
+        if(this.props.auto){
+            setInterval(function(){
+                self.sliding(self.state.activeIndex + 1);
+            }, this.props.interval);
+        }
     },
     componentWillReceiveProps(nextProps) {
         if (this.props.activeIndex !== nextProps.activeIndex) {

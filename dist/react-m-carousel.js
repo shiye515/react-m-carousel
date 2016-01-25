@@ -28,6 +28,8 @@ var ReactMCarousel = _react2['default'].createClass({
     propTypes: {
         loop: _react2['default'].PropTypes.bool,
         lazy: _react2['default'].PropTypes.bool,
+        auto: _react2['default'].PropTypes.bool,
+        interval: _react2['default'].PropTypes.number,
         direction: _react2['default'].PropTypes.oneOf(['vertical', 'horizontal']),
         indicators: _react2['default'].PropTypes.bool,
         onSwiped: _react2['default'].PropTypes.func,
@@ -47,7 +49,8 @@ var ReactMCarousel = _react2['default'].createClass({
             responsive: 40,
             activeIndex: 0,
             onSwiped: noop,
-            onSwiping: noop
+            onSwiping: noop,
+            interval: 3000
         };
     },
     initialState: function initialState() {
@@ -302,6 +305,12 @@ var ReactMCarousel = _react2['default'].createClass({
         this.setState({
             slideWidth: this.refs.carousel.getBoundingClientRect().width
         });
+        var self = this;
+        if (this.props.auto) {
+            setInterval(function () {
+                self.sliding(self.state.activeIndex + 1);
+            }, this.props.interval);
+        }
     },
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
         if (this.props.activeIndex !== nextProps.activeIndex) {
