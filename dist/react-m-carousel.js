@@ -306,8 +306,8 @@ var ReactMCarousel = _react2['default'].createClass({
             slideWidth: this.refs.carousel.getBoundingClientRect().width
         });
         var self = this;
-        if (this.props.auto) {
-            setInterval(function () {
+        if (this.props.auto && this.props.children.length > 1) {
+            this.intervalTimer = setInterval(function () {
                 self.sliding(self.state.activeIndex + 1);
             }, this.props.interval);
         }
@@ -316,6 +316,9 @@ var ReactMCarousel = _react2['default'].createClass({
         if (this.props.activeIndex !== nextProps.activeIndex) {
             this.sliding(nextProps.activeIndex);
         }
+    },
+    componentWillUnmount: function componentWillUnmount() {
+        clearInterval(this.intervalTimer);
     }
 });
 
@@ -344,7 +347,7 @@ var ReactMCarouselSlide = _react2['default'].createClass({
         width: _react2['default'].PropTypes.number,
         actived: _react2['default'].PropTypes.bool,
         lazy: _react2['default'].PropTypes.bool,
-        children: _react2['default'].PropTypes.element
+        children: _react2['default'].PropTypes.any
     },
     getDefaultProps: function getDefaultProps() {
         return {

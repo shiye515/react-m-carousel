@@ -261,8 +261,8 @@ var ReactMCarousel = React.createClass({
             slideWidth: this.refs.carousel.getBoundingClientRect().width
         });
         var self = this;
-        if(this.props.auto){
-            setInterval(function(){
+        if(this.props.auto && this.props.children.length > 1){
+            this.intervalTimer = setInterval(function(){
                 self.sliding(self.state.activeIndex + 1);
             }, this.props.interval);
         }
@@ -271,6 +271,9 @@ var ReactMCarousel = React.createClass({
         if (this.props.activeIndex !== nextProps.activeIndex) {
             this.sliding(nextProps.activeIndex)
         }
+    },
+    componentWillUnmount() {
+        clearInterval(this.intervalTimer);
     }
 });
 

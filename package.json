@@ -36,7 +36,7 @@
     "examples": "gulp dev:server",
     "lint": "eslint ./; true",
     "publish:site": "set NODE_ENV=production gulp publish:examples",
-    "release": "set NODE_ENV=production gulp release",
+    "release": "set NODE_ENV=production && gulp release",
     "start": "gulp dev",
     "test": "echo \"no tests yet\" && exit 0",
     "watch": "gulp watch:lib"

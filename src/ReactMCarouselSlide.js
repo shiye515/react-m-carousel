@@ -5,7 +5,7 @@ var ReactMCarouselSlide = React.createClass({
         width: React.PropTypes.number,
         actived: React.PropTypes.bool,
         lazy: React.PropTypes.bool,
-        children: React.PropTypes.element
+        children: React.PropTypes.any
     },
     getDefaultProps() {
         return {
