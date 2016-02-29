@@ -43,7 +43,8 @@ var ReactMCarousel = React.createClass({
             swiping: false,
             start: 0,
             delta: 0,
-            transitionDuration: 0
+            transitionDuration: 0,
+            auto: this.props.auto && this.props.children.length > 1
         }
     },
     getInitialState() {
@@ -136,7 +137,8 @@ var ReactMCarousel = React.createClass({
             x: e.touches[0].clientX,
             y: e.touches[0].clientY,
             swiping: false
-        })
+        });
+        this.clearInterval();
     },
     touchMove: function (e) {
         if (!this.state.x || !this.state.y || e.touches.length > 1) {
@@ -193,10 +195,11 @@ var ReactMCarousel = React.createClass({
             }
         }
 
-        this.sliding(activeIndex, pos.absX)
+        this.sliding(activeIndex, pos.absX);
+        this.setInterval();
     },
     touchCancel(e) {
-        console.log(e)
+        this.setInterval();
     },
     getIndicators() {
         if (!this.props.indicators) {
@@ -256,16 +259,24 @@ var ReactMCarousel = React.createClass({
             </div>
         );
     },
-    componentDidMount() {
-        this.setState({
-            slideWidth: this.refs.carousel.getBoundingClientRect().width
-        });
+    setInterval(){
         var self = this;
-        if(this.props.auto && this.props.children.length > 1){
+        if(this.state.auto){
             this.intervalTimer = setInterval(function(){
                 self.sliding(self.state.activeIndex + 1);
             }, this.props.interval);
         }
+    },
+    clearInterval(){
+        if(this.intervalTimer){
+            clearInterval(this.intervalTimer);
+        }
+    },
+    componentDidMount() {
+        this.setState({
+            slideWidth: this.refs.carousel.getBoundingClientRect().width
+        });
+        this.setInterval();
     },
     componentWillReceiveProps(nextProps) {
         if (this.props.activeIndex !== nextProps.activeIndex) {
@@ -273,7 +284,7 @@ var ReactMCarousel = React.createClass({
         }
     },
     componentWillUnmount() {
-        clearInterval(this.intervalTimer);
+        this.clearInterval();
     }
 });
 

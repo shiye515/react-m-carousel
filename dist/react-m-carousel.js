@@ -60,7 +60,8 @@ var ReactMCarousel = _react2['default'].createClass({
             swiping: false,
             start: 0,
             delta: 0,
-            transitionDuration: 0
+            transitionDuration: 0,
+            auto: this.props.auto && this.props.children.length > 1
         };
     },
     getInitialState: function getInitialState() {
@@ -154,6 +155,7 @@ var ReactMCarousel = _react2['default'].createClass({
             y: e.touches[0].clientY,
             swiping: false
         });
+        this.clearInterval();
     },
     touchMove: function touchMove(e) {
         if (!this.state.x || !this.state.y || e.touches.length > 1) {
@@ -211,9 +213,10 @@ var ReactMCarousel = _react2['default'].createClass({
         }
 
         this.sliding(activeIndex, pos.absX);
+        this.setInterval();
     },
     touchCancel: function touchCancel(e) {
-        console.log(e);
+        this.setInterval();
     },
     getIndicators: function getIndicators() {
         var _this = this;
@@ -301,16 +304,44 @@ var ReactMCarousel = _react2['default'].createClass({
             this.getIndicators()
         );
     },
-    componentDidMount: function componentDidMount() {
-        this.setState({
-            slideWidth: this.refs.carousel.getBoundingClientRect().width
-        });
+    setInterval: (function (_setInterval) {
+        function setInterval() {
+            return _setInterval.apply(this, arguments);
+        }
+
+        setInterval.toString = function () {
+            return _setInterval.toString();
+        };
+
+        return setInterval;
+    })(function () {
         var self = this;
-        if (this.props.auto && this.props.children.length > 1) {
+        if (this.state.auto) {
             this.intervalTimer = setInterval(function () {
                 self.sliding(self.state.activeIndex + 1);
             }, this.props.interval);
         }
+    }),
+    clearInterval: (function (_clearInterval) {
+        function clearInterval() {
+            return _clearInterval.apply(this, arguments);
+        }
+
+        clearInterval.toString = function () {
+            return _clearInterval.toString();
+        };
+
+        return clearInterval;
+    })(function () {
+        if (this.intervalTimer) {
+            clearInterval(this.intervalTimer);
+        }
+    }),
+    componentDidMount: function componentDidMount() {
+        this.setState({
+            slideWidth: this.refs.carousel.getBoundingClientRect().width
+        });
+        this.setInterval();
     },
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
         if (this.props.activeIndex !== nextProps.activeIndex) {
@@ -318,7 +349,7 @@ var ReactMCarousel = _react2['default'].createClass({
         }
     },
     componentWillUnmount: function componentWillUnmount() {
-        clearInterval(this.intervalTimer);
+        this.clearInterval();
     }
 });
 
