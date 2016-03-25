@@ -1,0 +1,58 @@
+{
+  "name": "react-m-carousel",
+  "version": "1.0.7",
+  "description": "mini carousel ui component for react",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-spider",
+    "carousel"
+  ],
+  "homepage": "https://github.com/shiye515/react-m-carousel",
+  "author": "shiye515@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shiye515/react-m-carousel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shiye515/react-m-carousel/issues"
+  },
+  "files": [
+    "lib",
+    "assets/*.css"
+  ],
+  "licenses": "MIT",
+  "main": "./lib/index",
+  "config": {
+    "port": 8000
+  },
+  "scripts": {
+    "build": "rc-tools run build",
+    "gh-pages": "rc-tools run gh-pages",
+    "start": "rc-tools run server",
+    "pub": "rc-tools run pub",
+    "lint": "rc-tools run lint",
+    "karma": "rc-tools run karma",
+    "saucelabs": "rc-tools run saucelabs",
+    "test": "rc-tools run test",
+    "chrome-test": "rc-tools run chrome-test",
+    "coverage": "rc-tools run coverage"
+  },
+  "devDependencies": {
+    "eslint": "^2.3.0",
+    "eslint-config-airbnb": "^6.1.0",
+    "eslint-plugin-react": "^4.2.1",
+    "expect.js": "0.3.x",
+    "pre-commit": "1.x",
+    "rc-tools": "5.x",
+    "react": "0.14.x",
+    "react-addons-test-utils": "0.14.x",
+    "react-dom": "0.14.x"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "dependencies": {
+    "react-prefixer": "^1.1.4"
+  }
+}
