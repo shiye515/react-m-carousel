@@ -22,7 +22,7 @@
     "assets/*.css"
   ],
   "licenses": "MIT",
-  "main": "./lib/index",
+  "main": "./lib/ReactMCarousel.js",
   "config": {
     "port": 8000
   },
