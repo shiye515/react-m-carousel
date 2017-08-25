@@ -25,11 +25,12 @@
   "scripts": {
     "start": "webpack-dev-server --open",
     "build:docs": "webpack",
-    "build": "rc-tools run test"
+    "build": "webpack --config webpack.prod.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.8",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.5",

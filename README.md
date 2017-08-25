@@ -24,7 +24,7 @@ npm start
 
 ## Example
 
-http://localhost:8000/examples/
+http://localhost:8080/
 
 
 online example: http://shiye515.github.io/react-m-carousel/

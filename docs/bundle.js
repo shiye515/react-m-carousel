@@ -23673,12 +23673,6 @@ var ReactMCarouselSlide = function (_Component) {
   return ReactMCarouselSlide;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-ReactMCarouselSlide.propTypes = {
-  width: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
-  actived: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.bool,
-  lazy: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.bool,
-  children: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.any
-};
 /* harmony default export */ __webpack_exports__["a"] = (ReactMCarouselSlide);
 
 /***/ }),
@@ -23813,11 +23807,6 @@ var Indicators = function (_Component) {
   return Indicators;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-Indicators.propTypes = {
-  children: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.any,
-  activeIndex: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
-  onClick: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func
-};
 /* harmony default export */ __webpack_exports__["a"] = (Indicators);
 
 /***/ }),

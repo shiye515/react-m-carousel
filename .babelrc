@@ -7,5 +7,6 @@
       }
     ],
     "react"
-  ]
+  ],
+  "plugins": ["transform-react-remove-prop-types"]
 }
