@@ -1,42 +1,42 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-var ReactMCarouselSlide = React.createClass({
-    propTypes: {
-        width: React.PropTypes.number,
-        actived: React.PropTypes.bool,
-        lazy: React.PropTypes.bool,
-        children: React.PropTypes.any
-    },
-    getDefaultProps() {
-        return {
-            actived: false,
-            lazy: false
-        }
-    },
-    getInitialState() {
-        return {
-            actived: this.props.actived
-        }
-    },
-    render() {
-        var style = {
-            display: 'inline-block',
-            height: '100%',
-            width: this.props.width
-        }
-        if (this.props.width) {
-            return (<div className="m-carousel-slide" style={style}>{(this.props.lazy && !this.state.actived) ? '加载中...' : this.props.children}</div>);
-        }else{
-            return null
-        }
-    },
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.actived) {
-            this.setState({
-                actived: true
-            })
-        }
+class ReactMCarouselSlide extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      actived: this.props.actived
     }
-});
-
-export default ReactMCarouselSlide;
+  }
+  render () {
+    const { width, lazy } = this.props
+    const { actived } = this.state
+    var style = {
+      display: 'inline-block',
+      height: '100%',
+      width
+    }
+    if (!width) {
+      return null
+    }
+    return (
+      <div className='m-carousel-slide' style={style}>
+        {(lazy && !actived) ? '加载中...' : this.props.children}
+      </div>
+    )
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.actived) {
+      this.setState({
+        actived: true
+      })
+    }
+  }
+}
+ReactMCarouselSlide.propTypes = {
+  width: PropTypes.number,
+  actived: PropTypes.bool,
+  lazy: PropTypes.bool,
+  children: PropTypes.any
+}
+export default ReactMCarouselSlide
