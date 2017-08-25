@@ -1,10 +1,13 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+let publicPath = process.env.npm_lifecycle_event === 'build:docs' ? '/react-m-carousel/' : '/'
 module.exports = {
   entry: './examples/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'docs')
+    path: path.resolve(__dirname, 'docs'),
+    publicPath
   },
   module: {
     rules: [
