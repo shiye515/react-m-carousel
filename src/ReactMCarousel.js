@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Slide from './Slide.js'
 import Indicators from './Indicators.js'
 
-import prefix from 'react-prefixer'
+import prefix from 'inline-style-prefixer/static'
 function noop () {}
 
 function positionDiff (e, { startX, startY }) {

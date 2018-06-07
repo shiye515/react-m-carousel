@@ -142,3 +142,8 @@ open coverage/ dir
 ## License
 
 react-m-carousel is released under the MIT license.
+
+Built
+Built at: 2018-06-06 16:29:44
+            Asset      Size  Chunks             Chunk Names
+ReactMCarousel.js  18.1 KiB       0  [emitted]  main
