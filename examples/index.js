@@ -1,6 +1,7 @@
 import './index.css'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+// import ReactMCarousel from 'react-m-carousel'
 import ReactMCarousel from '../src/ReactMCarousel.js'
 import indicator from '../src/indicator'
 

@@ -6,7 +6,8 @@ module.exports = {
   output: {
     filename: 'ReactMCarousel.js',
     path: path.resolve(__dirname, 'lib'),
-    library: 'ReactMCarousel'
+    library: 'ReactMCarousel',
+    libraryTarget: 'umd'
   },
   externals: [
     'react',
