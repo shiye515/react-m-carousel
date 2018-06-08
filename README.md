@@ -20,8 +20,8 @@ React Carousel Component for mobile
 
 1. 更新react版本16.4
 2. 更新编译工具webpack到4.11
-3. 重构了所有代码，提升了性能，减小了体积（8.5KiB -> 5.0KiB）
-1. 去掉了除react之外的依赖
+3. 重构了所有代码，提升了性能，减小了体积（8.5KiB -> 5.26KiB）
+4. 去掉了除react之外的依赖
 
 ### 下面是最新的编译信息
 - Hash: 06bcfa1e2772b05a9184
