@@ -10,8 +10,7 @@ module.exports = {
   },
   externals: [
     'react',
-    'react-dom',
-    'inline-style-prefixer/static'
+    'react-dom'
   ],
   module: {
     rules: [
